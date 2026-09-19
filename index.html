@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0d1830">
+    <title>Big Big</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --navy: #0d1830;
+        --cyan: #75d8ed;
+        --coral: #d97976;
+        --yellow: #fff0a8;
+        --lavender: #d8c5ff;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        align-items: center;
+        background:
+          radial-gradient(circle at 50% 43%, #19355a 0 1px, transparent 2px) 0 0 / 34px 34px,
+          radial-gradient(ellipse at 50% 45%, #214a6b 0%, var(--navy) 64%);
+        color: var(--yellow);
+        display: grid;
+        font-family: ui-monospace, "Cascadia Code", monospace;
+        margin: 0;
+        min-height: 100svh;
+        overflow: hidden;
+      }
+
+      main { text-align: center; }
+
+      #mascot {
+        animation: float 3.5s ease-in-out infinite;
+        background: none;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        padding: 1rem;
+        position: relative;
+      }
+
+      #mascot:focus-visible { outline: 3px solid var(--yellow); outline-offset: 5px; }
+
+      .bubble {
+        background: var(--yellow);
+        border: 3px solid var(--coral);
+        border-radius: 14px;
+        box-shadow: 5px 5px 0 var(--coral);
+        color: var(--navy);
+        font: inherit;
+        left: 52%;
+        max-width: min(280px, 72vw);
+        min-height: 3.5rem;
+        padding: .75rem 1rem;
+        position: absolute;
+        top: 0;
+        transform: translateX(-8%);
+        z-index: 1;
+      }
+
+      .bubble::after {
+        border: 12px solid transparent;
+        border-top-color: var(--coral);
+        bottom: -26px;
+        content: "";
+        left: 27px;
+        position: absolute;
+      }
+
+      #mascot-image {
+        display: block;
+        image-rendering: pixelated;
+        max-height: min(45vh, 360px);
+        max-width: min(72vw, 360px);
+        object-fit: contain;
+        width: auto;
+      }
+
+      #mascot-placeholder {
+        background: var(--lavender);
+        clip-path: polygon(25% 0, 75% 0, 100% 25%, 100% 82%, 84% 82%, 84% 100%, 66% 100%, 66% 82%, 50% 82%, 50% 100%, 32% 100%, 32% 82%, 16% 82%, 16% 100%, 0 100%, 0 25%);
+        display: block;
+        filter: drop-shadow(6px 6px 0 var(--cyan));
+        height: min(45vh, 360px);
+        margin: auto;
+        position: relative;
+        width: min(58vw, 280px);
+      }
+
+      #mascot-placeholder::before,
+      #mascot-placeholder::after {
+        background: var(--navy);
+        content: "";
+        height: 18px;
+        position: absolute;
+        top: 38%;
+        width: 18px;
+      }
+
+      #mascot-placeholder::before { left: 31%; }
+      #mascot-placeholder::after { right: 31%; }
+
+      h1 {
+        bottom: 1.5rem;
+        font-size: clamp(1rem, 3vw, 1.35rem);
+        letter-spacing: .2em;
+        margin: 0;
+        position: fixed;
+        text-transform: uppercase;
+        width: 100%;
+      }
+
+      @keyframes float {
+        50% { transform: translateY(-6px); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #mascot { animation: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <button id="mascot" type="button" aria-label="Change the sleepy thought">
+        <span class="bubble" id="bubble" aria-live="polite"></span>
+        <span id="mascot-placeholder" aria-hidden="true"></span>
+        <img id="mascot-image" src="mascot.webp" alt="Big Big, a sleepy pixel ghost">
+      </button>
+      <h1>Big Big</h1>
+    </main>
+
+    <script>
+      const lines = [
+        "the moon forgot to hurry",
+        "small stars stay awake",
+        "the night is soft today",
+        "dreams fit in small pockets",
+        "clouds know every secret",
+        "slow songs warm the dark",
+        "a quiet light waits here",
+        "sleep finds the window first",
+        "the sky hums very low",
+        "tomorrow can wait outside",
+        "tea steam turns into stars",
+        "little hearts need rest",
+        "คืนนี้ดาวกระพริบเบา ๆ",
+        "เมฆเล็กกำลังง่วงนอน",
+        "เก็บความฝันไว้ใกล้หมอน",
+        "แสงจันทร์เดินช้า ๆ",
+        "คืนนี้เงียบพอดี",
+        "ลมหนาวร้องเพลงเบา",
+        "หัวใจพักก่อนก็ได้",
+        "ดาวดวงเล็กยังอยู่ตรงนี้",
+        "หลับตาแล้วฟังท้องฟ้า",
+        "พรุ่งนี้ค่อยว่ากันนะ",
+        "เมฆพาความคิดลอยไป",
+        "ราตรีนี้อ่อนโยนเสมอ"
+      ];
+      const bubble = document.querySelector("#bubble");
+      const mascotImage = document.querySelector("#mascot-image");
+      let current = -1;
+
+      function nextLine() {
+        current = Math.floor(Math.random() * lines.length);
+        bubble.textContent = lines[current];
+        bubble.lang = /[\u0E00-\u0E7F]/.test(lines[current]) ? "th" : "en";
+      }
+
+      document.querySelector("#mascot").addEventListener("click", nextLine);
+      mascotImage.addEventListener("load", () => {
+        document.querySelector("#mascot-placeholder").hidden = true;
+      });
+      mascotImage.addEventListener("error", () => {
+        mascotImage.hidden = true;
+      });
+      nextLine();
+      setInterval(nextLine, 5000);
+    </script>
+  </body>
+</html>
